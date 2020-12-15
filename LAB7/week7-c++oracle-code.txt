@@ -1,0 +1,184 @@
+#include <iostream>
+#include <occi.h>
+
+
+using oracle::occi::Environment;
+using oracle::occi::Connection;
+
+using namespace oracle::occi;
+using namespace std;
+
+int main(void)
+{
+    Environment* env = nullptr;
+    Connection* conn = nullptr;
+    Statement* stmt = nullptr;
+    ResultSet* rs = nullptr;
+
+    int num;
+    string str;
+    string user = "dbs211_202d45";
+    string pass = "11528796";
+    string constr = "myoracle12c.senecacollege.ca:1521/oracle12c";
+
+    try {
+
+        env = Environment::createEnvironment(Environment::DEFAULT);
+        conn = env->createConnection(user, pass, constr);
+        std::cout << "connection is successful" << endl;
+
+        /*stmt=conn->createStatement("CREATE TABLE student (s_id NUMBER(4), name VARCHAR2(40))");
+        stmt->executeUpdate();
+        cout << "table created successful" << endl;
+
+        stmt = conn->createStatement("CREATE TABLE course (c_id NUMBER(4), name VARCHAR2(40))");
+        stmt->executeUpdate();
+        cout << "table created successful" << endl;*/
+
+        /*stmt = conn->createStatement("INSERT INTO student values(888,'C++prog')");
+        stmt->executeUpdate();
+        cout << "row inserted successful" << endl;
+
+        stmt = conn->createStatement("INSERT INTO course values(333,'aaa')");
+        stmt->executeUpdate();
+        cout << "row inserted successful" << endl;*/
+
+        /*stmt = conn->createStatement();
+        stmt->setSQL("INSERT INTO student values (:1,:2)");
+       
+        stmt->setInt(1,1002);
+        stmt->setString(2, "SENECA");
+        stmt->executeUpdate();
+        cout << "first student inserted successful" << endl;
+
+        stmt->setInt(1, 1005);
+        stmt->setString(2, "AAA");
+        stmt->executeUpdate();
+        cout << "second student inserted successful" << endl;*/
+
+
+        /*stmt = conn->createStatement();
+        stmt->setSQL("INSERT INTO student values (:1,:2)");
+        stmt->setInt(1, 1008);
+        stmt->setString(2, "aaaaaa");
+        stmt->executeUpdate();
+        cout << "student inserted successful" << endl;
+
+        stmt->setSQL("DELETE from student where s_id = :1");
+        stmt->setInt(1, 1005);
+        stmt->executeUpdate();
+        cout << " student deleted successful" << endl;*/
+
+
+        //stmt = conn->createStatement("SELECT * from student");
+        //rs = stmt->executeQuery();
+        //cout << "The CPA program has:" << endl;
+        //while (rs->next())
+        //{
+        //    int count = rs->getInt(1); // get the first column as int
+        //    string name = rs->getString(2); // get the second column as string
+        //    cout << count << " " << name << endl;
+        //}
+
+        
+        /*stmt = conn->createStatement();
+        stmt->setSQL("SELECT * FROM tempstudent WHERE gpa >= :1");
+        float gpa = 3.0;
+        stmt->setFloat(1, gpa);
+        rs = stmt->executeQuery();
+        cout << "The students with GPA 3.0:" << endl;
+        while (rs->next())
+        {
+            cout << rs->getInt(1) << " " << rs->getString(2) << rs->getFloat(3) << endl;
+        }*/
+
+
+        /*stmt = conn->createStatement("SELECT * from student");
+        rs = stmt->executeQuery();
+        if (!rs->next())
+        {
+            cout << "resultse is empty" << endl;
+        }
+        else
+        {
+            do {
+                cout << "student id=" << rs->getInt(1)<<"student name=" << rs->getString(2) << endl;
+            } while (rs->next());
+            
+        }*/
+
+        /*stmt = conn->createStatement("SELECT * from student where s_id=:1");
+        stmt->setInt(1,1007);
+        rs = stmt->executeQuery();
+        if (!rs->next())
+        {
+            cout << "resultse is empty" << endl;
+        }
+        else
+        {
+            do {
+                cout << "student id=" << rs->getInt(1) << "student name=" << rs->getString(2) << endl;
+            } while (rs->next());
+        }*/
+
+
+        /*stmt = conn->createStatement("SELECT * from student where s_id=:1");
+        stmt->setInt(1,111);
+        rs = stmt->executeQuery();
+        if (!rs->next())
+        {
+            cout << "resultse is empty" << endl;
+        }
+        else
+        {
+            do 
+            {
+                if (!rs->isNull(2))
+                {
+                    cout << "student id=" << rs->getInt(1) << "student name=" << rs->getString(2) << endl;
+                }
+                else
+                {
+                    cout << "student id=" << rs->getInt(1) << "student name=" << "unknown" << endl;
+                }
+            } while (rs->next());
+        }*/
+
+	stmt = conn->createStatement();
+        rs = stmt->executeQuery("SELECT officecode,city,state,country,postalcode from offices order by officecode");
+        cout << "The company office are:" << endl;
+        cout << "#  city    state   country     postalcode" << endl;
+        while (rs->next())
+        {
+            int count = rs->getInt(1); // get the first column as int
+            string city = rs->getString(2); 
+            string state = rs->getString(3);
+            string country = rs->getString(4);
+            string pc = rs->getString(5);
+            cout << count <<" "<<city<<" "<<state<<" "<<country<<" "<<pc<< endl;
+        }
+
+        stmt = conn->createStatement();
+        rs = stmt->executeQuery("select p.playerid,p.firstname,p.lastname,t.teamid,t.teamname from players p,teams t where p.teamid=t.teamid");
+        cout << "The playes are:" << endl;
+        while (rs->next())
+        {
+            int pid = rs->getInt(1); // get the first column as int
+            string fname = rs->getString(2);
+            string lname = rs->getString(3);
+            int tid = rs->getInt(4);
+            string tname = rs->getString(5);
+            cout << pid << " " << fname << " " << lname << " " << tid << " " << tname << endl;
+        }
+
+        env->terminateConnection(conn);
+        Environment::terminateEnvironment(env);
+
+    }
+    catch (SQLException& sqlExcp) {
+        cout << "error";
+        cout << sqlExcp.getErrorCode() << ": " << sqlExcp.getMessage();
+    }
+
+    return 0;
+}
